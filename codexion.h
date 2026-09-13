@@ -17,6 +17,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+t_sim 		*parse_args(int *arr, char *scheduler);
+t_scheduler pick_scheduler(char *scheduler);
+t_dongle	*build_dongles(int nb_dongles);
+t_coder		*build_coders(int nb_coders);
+
+
 typedef long long t_time;
 
 typedef enum e_scheduler{
@@ -90,7 +96,6 @@ struct	s_sim{
 	
 	volatile	int	stop;
 	pthread_mutex_t	stop_lock;
-
 
 	pthread_mutex_t log_lock;
 };

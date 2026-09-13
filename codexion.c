@@ -15,21 +15,41 @@
 #include <stdlib.h>
 #include <pthread.h>
 
+int is_valid_digit(char *str)
+{
+	int	i;
+	i = 0;
+
+	while (str[i])
+	{
+		if (str[i] >= "0" && str[i] <= "9")
+			i++;
+		else
+			return (1);
+	}
+	return (0);
+}
+
+int arg_errors(int ac, char **av)
+{
+	int	i;
+
+	i = 0;
+	while (i < ac)
+	{
+		
+		i++;
+	}
+}
 
 int main(int ac, char **av)
 {
-	int i = 1;
-	if (ac < 2)
+	int i;
+
+	i = 0;
+	while (i < ac)
 	{
-		printf("Error check your arguments");
-		return 0;
-	}
-	else 
-	{
-		while(i < ac)
-		{
-			printf("%s\n", av[i]);
-			i++;
-		}
+
+		i++;
 	}
 }

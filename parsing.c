@@ -106,8 +106,8 @@ t_sim *parse_args(int *arr, char *scheduler)
 		i++;
 	}
 	sim->start_time = 0;
-	pthread_mutex_init(&stop_lock, NULL);
-	pthread_mutx_init(&log_lock, NULL);
+	pthread_mutex_init(&sim->stop_lock, NULL);
+	pthread_mutx_init(&sim->log_lock, NULL);
 
 	return (sim)
 }

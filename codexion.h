@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   codexion.h                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adkaid-s <adkaid-s@1337.ma>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/13 16:17:30 by adkaid-s          #+#    #+#             */
+/*   Updated: 2026/09/13 16:17:36 by adkaid-s         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef CODEXION_H
 #define CODEXION_H
 
@@ -63,17 +75,17 @@ typedef struct s_dongle{
 }	t_dongle;
 
 struct	s_sim{
-	int	nb_of_coders;
-	t_time	time_to_burnout;
-	t_time	time_to_compile;
-	t_time	time_to_debug;
-	t_time	time_to_refactor;
-	int	nb_of_compiles;
-	t_time	dongle_cd;
+	int			nb_of_coders;
+	int			nb_of_compiles;
+	t_time		time_to_burnout;
+	t_time		time_to_compile;
+	t_time		time_to_debug;
+	t_time		time_to_refactor;
+	t_time		dongle_cd;
 	t_scheduler	scheduler;
 	
-	t_time start_time;
-	t_coder	*coders;
+	t_time 		start_time;
+	t_coder		*coders;
 	t_dongle	*dongles;
 	
 	volatile	int	stop;

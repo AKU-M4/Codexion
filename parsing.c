@@ -101,8 +101,8 @@ t_sim *parse_args(int *arr, char *scheduler)
 	while (i < sim->nb_of_coders)
 	{
 		sim->coders[i].sim = sim;
-		sim->coders[i].right = sim->dongles[i];
-		sim->coders[i].left = sim->dongles[(i + 1) % sim->nb_coders];
+		sim->coders[i].right = &sim->dongles[i];
+		sim->coders[i].left = &sim->dongles[(i + 1) % sim->nb_coders];
 		i++;
 	}
 	sim->start_time = 0;

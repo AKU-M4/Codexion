@@ -11,45 +11,37 @@
 /* ************************************************************************** */
 
 #include "codexion.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <pthread.h>
 
-int is_valid_digit(char *str)
+int *turn_int_arr(char **av)
 {
-	int	i;
-	i = 0;
-
-	while (str[i])
-	{
-		if (str[i] >= "0" && str[i] <= "9")
-			i++;
-		else
-			return (1);
-	}
-	return (0);
-}
-
-int arg_errors(int ac, char **av)
-{
+	int *arr;
 	int	i;
 
-	i = 0;
-	while (i < ac)
+	i = 1;
+	while (i <= 7)
 	{
-		
+		arr[i] = atoi(av[i]) 
 		i++;
 	}
+	return arr
 }
 
 int main(int ac, char **av)
 {
 	int i;
+	t_sim *sim;
 
-	i = 0;
-	while (i < ac)
+	if (arg_errors(ac, av) == 1)
 	{
-
+		print("Missing or Invalid Arguemtns!");
+		return (1);
+	}
+	arg_arr = turn_int_arr(av)
+	sim = parse_args(arg_arr, av[8])
+	i = 1;
+	while (i <= ac)
+	{
+		print("")
 		i++;
 	}
 }

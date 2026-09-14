@@ -16,11 +16,14 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <pthread.h>
 
 t_sim 		*parse_args(int *arr, char *scheduler);
 t_scheduler pick_scheduler(char *scheduler);
 t_dongle	*build_dongles(int nb_dongles);
 t_coder		*build_coders(int nb_coders);
+int			arg_errors(int ac, char **av);
+char		*turn_lower(char *str);
 
 
 typedef long long t_time;

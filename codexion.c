@@ -12,36 +12,43 @@
 
 #include "codexion.h"
 
-int *turn_int_arr(char **av)
+#include "codexion.h"
+
+int	*turn_int_arr(char **av)
 {
-	int *arr;
+	int	*arr;
 	int	i;
 
-	i = 1;
-	while (i <= 7)
+	arr = malloc(sizeof(int) * 7);
+	if (arr == NULL)
+		return (NULL);
+	i = 0;
+	while (i < 7)
 	{
-		arr[i] = atoi(av[i]) 
+		arr[i] = atoi(av[i + 1]);
 		i++;
 	}
-	return arr
+	return (arr);
 }
 
-int main(int ac, char **av)
+int	main(int ac, char **av)
 {
-	int i;
-	t_sim *sim;
+	t_sim	*sim;
+	int		*arg_arr;
 
 	if (arg_errors(ac, av) == 1)
 	{
-		print("Missing or Invalid Arguemtns!");
+		printf("Missing or Invalid Arguments!\n");
 		return (1);
 	}
-	arg_arr = turn_int_arr(av)
-	sim = parse_args(arg_arr, av[8])
-	i = 1;
-	while (i <= ac)
-	{
-		print("")
-		i++;
-	}
+	arg_arr = turn_int_arr(av);
+	if (arg_arr == NULL)
+		return (1);
+	sim = parse_args(arg_arr, av[ac - 1]);
+	free(arg_arr);
+	if (sim == NULL)
+		return (1);
+	printf("%i\n", sim->nb_of_coders);
+	printf("%lli\n", sim->time_to_compile);
+	return (0);
 }

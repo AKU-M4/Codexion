@@ -12,7 +12,7 @@
 
 #include "codexion.h"
 
-char *turn_lower(char *str)
+char	*turn_lower(char *str)
 {
 	int	i;
 
@@ -20,35 +20,28 @@ char *turn_lower(char *str)
 	while (str[i])
 	{
 		if (str[i] >= 'A' && str[i] <= 'Z')
-			str[i] += 32
+			str[i] += 32;
 		i++;
 	}
-	return str
+	return (str);
 }
 
-int arg_errors(int ac, char **av)
+int	arg_errors(int ac, char **av)
 {
-	int	i;
+	int		i;
+	char	*lower_str;
 
 	if (ac != 9)
-		return (1)
+		return (1);
 	i = 1;
-	while (i <= ac)
+	while (i < 8)
 	{
-		if (i < 9)
-		{
-			if (atoi(av[i]) <= 0)
-				return (1);
-			i++;
-		}
-		elif (i == 9)
-		{
-			lower_str = turn_lower(av[i]);
-			if (strcmp(lower_str,"edf")) || (strcmp(lower_str, "fifo"))
-				i++;
-			else
-				return (1)
-		}
+		if (atoi(av[i]) <= 0)
+			return (1);
+		i++;
 	}
-	return (0)
+	lower_str = turn_lower(av[8]);
+	if (strcmp(lower_str, "edf") != 0 && strcmp(lower_str, "fifo") != 0)
+		return (1);
+	return (0);
 }

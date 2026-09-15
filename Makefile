@@ -1,5 +1,5 @@
 NAME = codexion.a
-SRCs = 
+SRCs = arg_errors.c parsing.c
 
 all:
 	gcc -o 

@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <pthread.h>
+#include <sys/time.h>
 
 typedef long long	t_time;
 
@@ -32,7 +33,8 @@ typedef enum e_state
 	S_TAKEN_DONGLE,
 	S_COMPILING,
 	S_DEBUGING,
-	S_REFACTORING
+	S_REFACTORING,
+	BURNED_OUT
 }	t_state;
 
 /* forward declarations so structs can reference each other */

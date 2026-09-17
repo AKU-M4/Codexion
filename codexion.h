@@ -34,10 +34,9 @@ typedef enum e_state
 	S_COMPILING,
 	S_DEBUGING,
 	S_REFACTORING,
-	BURNED_OUT
+	S_BURNED_OUT
 }	t_state;
 
-/* forward declarations so structs can reference each other */
 typedef struct s_sim		t_sim;
 typedef struct s_coder		t_coder;
 typedef struct s_dongle	t_dongle;
@@ -97,6 +96,7 @@ struct s_sim
 	t_time			start_time;
 	t_coder			*coders;
 	t_dongle		*dongles;
+	pthread_t		monitor;
 
 	volatile int	stop;
 	pthread_mutex_t	stop_lock;
@@ -104,7 +104,7 @@ struct s_sim
 	pthread_mutex_t	log_lock;
 };
 
-/* prototypes go last, once every type above exists */
+/* parsing.c / arg_errors.c / codexion.c */
 t_sim		*parse_args(int *arr, char *scheduler);
 t_scheduler	pick_scheduler(char *scheduler);
 t_dongle	*build_dongles(int nb_dongles);
@@ -112,5 +112,37 @@ t_coder		*build_coders(int nb_coders);
 int			arg_errors(int ac, char **av);
 char		*turn_lower(char *str);
 int			*turn_int_arr(char **av);
+
+/* heap.c */
+int			cmp_fifo(const t_wait_node *a, const t_wait_node *b);
+int			cmp_edf(const t_wait_node *a, const t_wait_node *b);
+int			heap_push(t_heap *h, t_wait_node node);
+int			heap_pop(t_heap *h, t_wait_node *out);
+int			heap_peek(t_heap *h, t_wait_node *out);
+
+/* time_utils.c */
+t_time		get_abs_ms(void);
+void		ms_to_timespec(t_time ms, struct timespec *ts);
+
+/* sim_state.c */
+int			sim_should_stop(t_sim *sim);
+void		set_stop(t_sim *sim);
+int			check_all_done(t_sim *sim);
+
+/* logger.c */
+void		log_state(t_sim *sim, int coder_id, t_state state);
+
+/* dongle.c */
+void		dongle_acquire(t_dongle *d, t_coder *c);
+void		dongle_release(t_dongle *d, t_time cooldown);
+
+/* coder.c */
+void		*coder_routine(void *arg);
+
+/* monitor.c */
+void		*monitor_routine(void *arg);
+
+/* cleanup.c */
+void		cleanup_sim(t_sim *sim);
 
 #endif

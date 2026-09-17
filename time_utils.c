@@ -1,9 +1,15 @@
-#inluce "codexion.h"
+#include "codexion.h"
 
-t_time get_ms(void)
+t_time	get_abs_ms(void)
 {
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
+	struct timeval	tv;
 
-    return ((t_time)tv.tv_sec * 1000 + tv.tv_usec / 100 )
+	gettimeofday(&tv, NULL);
+	return ((t_time)tv.tv_sec * 1000 + tv.tv_usec / 1000);
+}
+
+void	ms_to_timespec(t_time ms, struct timespec *ts)
+{
+	ts->tv_sec = ms / 1000;
+	ts->tv_nsec = (ms % 1000) * 1000000;
 }

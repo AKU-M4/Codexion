@@ -12,8 +12,6 @@
 
 #include "codexion.h"
 
-#include "codexion.h"
-
 int	*turn_int_arr(char **av)
 {
 	int	*arr;
@@ -29,6 +27,35 @@ int	*turn_int_arr(char **av)
 		i++;
 	}
 	return (arr);
+}
+
+static void	spawn_threads(t_sim *sim)
+{
+	int	i;
+
+	sim->start_time = get_abs_ms();
+	i = 0;
+	while (i < sim->nb_of_coders)
+	{
+		sim->coders[i].last_compile_time = sim->start_time;
+		pthread_create(&sim->coders[i].thread, NULL, coder_routine,
+			&sim->coders[i]);
+		i++;
+	}
+	pthread_create(&sim->monitor, NULL, monitor_routine, sim);
+}
+
+static void	join_threads(t_sim *sim)
+{
+	int	i;
+
+	i = 0;
+	while (i < sim->nb_of_coders)
+	{
+		pthread_join(sim->coders[i].thread, NULL);
+		i++;
+	}
+	pthread_join(sim->monitor, NULL);
 }
 
 int	main(int ac, char **av)
@@ -48,7 +75,8 @@ int	main(int ac, char **av)
 	free(arg_arr);
 	if (sim == NULL)
 		return (1);
-	printf("%i\n", sim->nb_of_coders);
-	printf("%lli\n", sim->time_to_compile);
+	spawn_threads(sim);
+	join_threads(sim);
+	cleanup_sim(sim);
 	return (0);
 }

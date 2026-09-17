@@ -1,38 +1,44 @@
 #include "codexion.h"
 
-static int	is_my_turn(t_dongle *d, t_coder *c)
+static int	try_claim_both(t_dongle *f, t_dongle *s, t_coder *c, t_time now)
 {
-	t_wait_node	top;
+	t_wait_node	p;
 
-	if (!heap_peek(&d->waiters, &top))
+	if (!can_take(f, c, now) || !can_take(s, c, now))
 		return (0);
-	return (top.coder == c && !d->in_use && get_abs_ms() >= d->available_at);
+	heap_pop(&f->waiters, &p);
+	heap_pop(&s->waiters, &p);
+	f->in_use = 1;
+	s->in_use = 1;
+	pthread_mutex_unlock(&s->lock);
+	pthread_mutex_unlock(&f->lock);
+	log_state(c->sim, c->id, S_TAKEN_DONGLE);
+	log_state(c->sim, c->id, S_TAKEN_DONGLE);
+	return (1);
 }
 
-void	dongle_acquire(t_dongle *d, t_coder *c)
+int	acquire_both(t_coder *c)
 {
-	t_wait_node		node;
-	t_wait_node		popped;
-	struct timespec	ts;
+	t_dongle	*f;
+	t_dongle	*s;
+	t_time		now;
 
-	node.coder = c;
-	node.arrival_time = get_abs_ms();
-	node.deadline = c->last_compile_time + c->sim->time_to_burnout;
-	pthread_mutex_lock(&d->lock);
-	heap_push(&d->waiters, node);
-	while (!is_my_turn(d, c) && !sim_should_stop(c->sim))
+	f = (c->left->id < c->right->id) ? c->left : c->right;
+	s = (c->left->id < c->right->id) ? c->right : c->left;
+	now = get_abs_ms();
+	push_waiter(f, c, now);
+	push_waiter(s, c, now);
+	while (!sim_should_stop(c->sim))
 	{
-		ms_to_timespec(get_abs_ms() + 5, &ts);
-		pthread_cond_timedwait(&d->cond, &d->lock, &ts);
+		pthread_mutex_lock(&f->lock);
+		pthread_mutex_lock(&s->lock);
+		if (try_claim_both(f, s, c, get_abs_ms()))
+			return (1);
+		pthread_mutex_unlock(&s->lock);
+		wait_both(f, s);
+		pthread_mutex_unlock(&f->lock);
 	}
-	if (is_my_turn(d, c))
-	{
-		heap_pop(&d->waiters, &popped);
-		d->in_use = 1;
-	}
-	pthread_mutex_unlock(&d->lock);
-	if (!sim_should_stop(c->sim))
-		log_state(c->sim, c->id, S_TAKEN_DONGLE);
+	return (0);
 }
 
 void	dongle_release(t_dongle *d, t_time cooldown)

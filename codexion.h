@@ -102,12 +102,13 @@ struct s_sim
 	pthread_mutex_t	stop_lock;
 
 	pthread_mutex_t	log_lock;
+	pthread_mutex_t	start_lock;
 };
 
 /* parsing.c / arg_errors.c / codexion.c */
 t_sim		*parse_args(int *arr, char *scheduler);
 t_scheduler	pick_scheduler(char *scheduler);
-t_dongle	*build_dongles(int nb_dongles);
+t_dongle	*build_dongles(int nb_dongles, t_scheduler sched);
 t_coder		*build_coders(int nb_coders);
 int			arg_errors(int ac, char **av);
 char		*turn_lower(char *str);
@@ -119,10 +120,12 @@ int			cmp_edf(const t_wait_node *a, const t_wait_node *b);
 int			heap_push(t_heap *h, t_wait_node node);
 int			heap_pop(t_heap *h, t_wait_node *out);
 int			heap_peek(t_heap *h, t_wait_node *out);
+void		heap_remove_coder(t_heap *h, t_coder *c);
 
 /* time_utils.c */
 t_time		get_abs_ms(void);
 void		ms_to_timespec(t_time ms, struct timespec *ts);
+void		smart_sleep(t_sim *sim, t_time duration_ms);
 
 /* sim_state.c */
 int			sim_should_stop(t_sim *sim);
@@ -132,8 +135,11 @@ int			check_all_done(t_sim *sim);
 /* logger.c */
 void		log_state(t_sim *sim, int coder_id, t_state state);
 
-/* dongle.c */
-void		dongle_acquire(t_dongle *d, t_coder *c);
+/* dongle.c / dongle_utils.c */
+int			can_take(t_dongle *d, t_coder *c, t_time now);
+void		wait_both(t_dongle *f, t_dongle *s);
+void		push_waiter(t_dongle *d, t_coder *c, t_time now);
+int			acquire_both(t_coder *c);
 void		dongle_release(t_dongle *d, t_time cooldown);
 
 /* coder.c */

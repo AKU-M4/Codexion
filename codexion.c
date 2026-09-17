@@ -33,16 +33,23 @@ static void	spawn_threads(t_sim *sim)
 {
 	int	i;
 
-	sim->start_time = get_abs_ms();
+	pthread_mutex_lock(&sim->start_lock);
 	i = 0;
 	while (i < sim->nb_of_coders)
 	{
-		sim->coders[i].last_compile_time = sim->start_time;
 		pthread_create(&sim->coders[i].thread, NULL, coder_routine,
 			&sim->coders[i]);
 		i++;
 	}
 	pthread_create(&sim->monitor, NULL, monitor_routine, sim);
+	sim->start_time = get_abs_ms();
+	i = 0;
+	while (i < sim->nb_of_coders)
+	{
+		sim->coders[i].last_compile_time = sim->start_time;
+		i++;
+	}
+	pthread_mutex_unlock(&sim->start_lock);
 }
 
 static void	join_threads(t_sim *sim)

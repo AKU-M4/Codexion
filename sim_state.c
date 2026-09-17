@@ -12,9 +12,24 @@ int	sim_should_stop(t_sim *sim)
 
 void	set_stop(t_sim *sim)
 {
+	int	i;
+
 	pthread_mutex_lock(&sim->stop_lock);
+	if (sim->stop)
+	{
+		pthread_mutex_unlock(&sim->stop_lock);
+		return ;
+	}
 	sim->stop = 1;
 	pthread_mutex_unlock(&sim->stop_lock);
+	i = 0;
+	while (i < sim->nb_of_coders)
+	{
+		pthread_mutex_lock(&sim->dongles[i].lock);
+		pthread_cond_broadcast(&sim->dongles[i].cond);
+		pthread_mutex_unlock(&sim->dongles[i].lock);
+		i++;
+	}
 }
 
 int	check_all_done(t_sim *sim)

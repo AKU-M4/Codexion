@@ -12,6 +12,24 @@
 
 #include "codexion.h"
 
+static int	is_numeric(const char *str)
+{
+	int	i;
+
+	i = 0;
+	if (str[i] == '+')
+		i++;
+	if (!str[i])
+		return (0);
+	while (str[i])
+	{
+		if (str[i] < '0' || str[i] > '9')
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 char	*turn_lower(char *str)
 {
 	int	i;
@@ -36,7 +54,11 @@ int	arg_errors(int ac, char **av)
 	i = 1;
 	while (i < 8)
 	{
-		if (atoi(av[i]) <= 0)
+		if (!is_numeric(av[i]))
+			return (1);
+		if (i < 7 && atoi(av[i]) <= 0)
+			return (1);
+		if (i == 7 && atoi(av[i]) < 0)
 			return (1);
 		i++;
 	}

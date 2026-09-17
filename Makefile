@@ -12,11 +12,14 @@ OBJ_DIR		= obj
 SRCS		= codexion.c \
 			  arg_errors.c \
 			  parsing.c \
+			  builder.c \
 			  heap.c \
+			  heap_utils.c \
 			  time_utils.c \
 			  sim_state.c \
 			  logger.c \
 			  dongle.c \
+			  dongle_utils.c \
 			  coder.c \
 			  monitor.c \
 			  cleanup.c

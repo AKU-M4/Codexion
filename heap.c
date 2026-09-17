@@ -1,24 +1,5 @@
 #include "codexion.h"
 
-int	cmp_fifo(const t_wait_node *a, const t_wait_node *b)
-{
-	return (a->arrival_time < b->arrival_time);
-}
-
-int	cmp_edf(const t_wait_node *a, const t_wait_node *b)
-{
-	return (a->deadline < b->deadline);
-}
-
-static void	swap_nodes(t_wait_node *a, t_wait_node *b)
-{
-	t_wait_node	tmp;
-
-	tmp = *a;
-	*a = *b;
-	*b = tmp;
-}
-
 static int	heap_grow(t_heap *h)
 {
 	t_wait_node	*bigger;
@@ -43,14 +24,17 @@ static int	heap_grow(t_heap *h)
 
 static void	sift_up(t_heap *h, size_t i)
 {
-	size_t	parent;
+	size_t		parent;
+	t_wait_node	tmp;
 
 	while (i > 0)
 	{
 		parent = (i - 1) / 2;
 		if (h->cmp(&h->nodes[i], &h->nodes[parent]))
 		{
-			swap_nodes(&h->nodes[i], &h->nodes[parent]);
+			tmp = h->nodes[i];
+			h->nodes[i] = h->nodes[parent];
+			h->nodes[parent] = tmp;
 			i = parent;
 		}
 		else
@@ -60,22 +44,21 @@ static void	sift_up(t_heap *h, size_t i)
 
 static void	sift_down(t_heap *h, size_t i)
 {
-	size_t	left;
-	size_t	right;
-	size_t	best;
+	size_t		best;
+	t_wait_node	tmp;
 
 	while (1)
 	{
-		left = i * 2 + 1;
-		right = i * 2 + 2;
 		best = i;
-		if (left < h->size && h->cmp(&h->nodes[left], &h->nodes[best]))
-			best = left;
-		if (right < h->size && h->cmp(&h->nodes[right], &h->nodes[best]))
-			best = right;
+		if (i * 2 + 1 < h->size && h->cmp(&h->nodes[i * 2 + 1], &h->nodes[best]))
+			best = i * 2 + 1;
+		if (i * 2 + 2 < h->size && h->cmp(&h->nodes[i * 2 + 2], &h->nodes[best]))
+			best = i * 2 + 2;
 		if (best == i)
 			break ;
-		swap_nodes(&h->nodes[i], &h->nodes[best]);
+		tmp = h->nodes[i];
+		h->nodes[i] = h->nodes[best];
+		h->nodes[best] = tmp;
 		i = best;
 	}
 }
@@ -102,13 +85,5 @@ int	heap_pop(t_heap *h, t_wait_node *out)
 	h->nodes[0] = h->nodes[h->size];
 	if (h->size > 0)
 		sift_down(h, 0);
-	return (1);
-}
-
-int	heap_peek(t_heap *h, t_wait_node *out)
-{
-	if (h->size == 0)
-		return (0);
-	*out = h->nodes[0];
 	return (1);
 }

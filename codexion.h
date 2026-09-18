@@ -3,22 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   codexion.h                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adkaid-s <adkaid-s@1337.ma>                    +#+  +:+       +#+        */
+/*   By: adkaid-s <adkaid-s@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/09/13 16:17:30 by adkaid-s          #+#    #+#             */
-/*   Updated: 2026/09/13 16:17:36 by adkaid-s         ###   ########.fr       */
+/*   Created: 2026/09/18 18:05:36 by adkaid-s          #+#    #+#             */
+/*   Updated: 2026/09/18 18:05:36 by adkaid-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef CODEXION_H
-#define CODEXION_H
+# define CODEXION_H
 
-#include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <pthread.h>
-#include <sys/time.h>
+# include <unistd.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <string.h>
+# include <pthread.h>
+# include <sys/time.h>
 
 typedef long long	t_time;
 
@@ -39,7 +39,7 @@ typedef enum e_state
 
 typedef struct s_sim		t_sim;
 typedef struct s_coder		t_coder;
-typedef struct s_dongle	t_dongle;
+typedef struct s_dongle		t_dongle;
 
 typedef struct s_wait_node
 {
@@ -65,10 +65,8 @@ struct s_coder
 	t_dongle		*left;
 	t_dongle		*right;
 	t_sim			*sim;
-
 	t_time			last_compile_time;
 	int				compiles_done;
-
 	pthread_mutex_t	state_lock;
 };
 
@@ -92,15 +90,12 @@ struct s_sim
 	t_time			time_to_refactor;
 	t_time			dongle_cd;
 	t_scheduler		scheduler;
-
 	t_time			start_time;
 	t_coder			*coders;
 	t_dongle		*dongles;
 	pthread_t		monitor;
-
 	volatile int	stop;
 	pthread_mutex_t	stop_lock;
-
 	pthread_mutex_t	log_lock;
 	pthread_mutex_t	start_lock;
 };

@@ -35,8 +35,7 @@ int	acquire_both(t_coder *c)
 	t_dongle	*s;
 	t_time		now;
 
-	f = (c->left->id < c->right->id) ? c->left : c->right;
-	s = (c->left->id < c->right->id) ? c->right : c->left;
+	order_dongles(c, &f, &s);
 	now = get_abs_ms();
 	push_waiter(f, c, now);
 	push_waiter(s, c, now);

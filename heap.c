@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heap.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adkaid-s <adkaid-s@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adkaid-s <adkaid-s@student.1337.ma>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/18 18:03:04 by adkaid-s          #+#    #+#             */
-/*   Updated: 2026/09/18 18:05:23 by adkaid-s         ###   ########.fr       */
+/*   Updated: 2026/09/19 00:31:28 by adkaid-s         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,10 @@ static int	heap_grow(t_heap *h)
 	size_t		new_cap;
 	size_t		i;
 
-	new_cap = h->capacity == 0 ? 4 : h->capacity * 2;
+	if (h->capacity == 0)
+		new_cap = 4;
+	else
+		new_cap = h->capacity * 2;
 	bigger = malloc(sizeof(t_wait_node) * new_cap);
 	if (bigger == NULL)
 		return (0);
@@ -62,9 +65,11 @@ static void	sift_down(t_heap *h, size_t i)
 	while (1)
 	{
 		best = i;
-		if (i * 2 + 1 < h->size && h->cmp(&h->nodes[i * 2 + 1], &h->nodes[best]))
+		if (i * 2 + 1 < h->size
+			&& h->cmp(&h->nodes[i * 2 + 1], &h->nodes[best]))
 			best = i * 2 + 1;
-		if (i * 2 + 2 < h->size && h->cmp(&h->nodes[i * 2 + 2], &h->nodes[best]))
+		if (i * 2 + 2 < h->size
+			&& h->cmp(&h->nodes[i * 2 + 2], &h->nodes[best]))
 			best = i * 2 + 2;
 		if (best == i)
 			break ;

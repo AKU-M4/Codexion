@@ -37,9 +37,9 @@ typedef enum e_state
 	S_BURNED_OUT
 }	t_state;
 
-typedef struct s_sim		t_sim;
-typedef struct s_coder		t_coder;
-typedef struct s_dongle		t_dongle;
+typedef struct s_sim	t_sim;
+typedef struct s_coder	t_coder;
+typedef struct s_dongle	t_dongle;
 
 typedef struct s_wait_node
 {
@@ -48,14 +48,12 @@ typedef struct s_wait_node
 	t_time	deadline;
 }	t_wait_node;
 
-typedef int	(*t_heap_cmp)(const t_wait_node *a, const t_wait_node *b);
-
 typedef struct s_heap
 {
 	t_wait_node	*nodes;
 	size_t		size;
 	size_t		capacity;
-	t_heap_cmp	cmp;
+	int			(*cmp)(const t_wait_node *a, const t_wait_node *b);
 }	t_heap;
 
 struct s_coder
@@ -131,6 +129,7 @@ int			check_all_done(t_sim *sim);
 void		log_state(t_sim *sim, int coder_id, t_state state);
 
 /* dongle.c / dongle_utils.c */
+void		order_dongles(t_coder *c, t_dongle **f, t_dongle **s);
 int			can_take(t_dongle *d, t_coder *c, t_time now);
 void		wait_both(t_dongle *f, t_dongle *s);
 void		push_waiter(t_dongle *d, t_coder *c, t_time now);

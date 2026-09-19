@@ -12,6 +12,17 @@
 
 #include "codexion.h"
 
+void	order_dongles(t_coder *c, t_dongle **f, t_dongle **s)
+{
+	*f = c->left;
+	*s = c->right;
+	if ((*f)->id > (*s)->id)
+	{
+		*f = c->right;
+		*s = c->left;
+	}
+}
+
 int	can_take(t_dongle *d, t_coder *c, t_time now)
 {
 	t_wait_node	top;

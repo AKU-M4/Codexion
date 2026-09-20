@@ -41,13 +41,22 @@ void	wait_both(t_dongle *f, t_dongle *s)
 	t_time			wake;
 
 	now = get_abs_ms();
-	wake = now + 5;
-	if (!f->in_use && f->available_at > now && f->available_at < wake)
+	wake = 0;
+	if (!f->in_use && f->available_at > now)
 		wake = f->available_at;
-	if (!s->in_use && s->available_at > now && s->available_at < wake)
-		wake = s->available_at;
-	ms_to_timespec(wake, &ts);
-	pthread_cond_timedwait(&f->cond, &f->lock, &ts);
+	if (!s->in_use && s->available_at > now)
+	{
+		if (wake == 0 || s->available_at < wake)
+			wake = s->available_at;
+	}
+	pthread_mutex_unlock(&s->lock);
+	if (wake > 0)
+	{
+		ms_to_timespec(wake, &ts);
+		pthread_cond_timedwait(&f->cond, &f->lock, &ts);
+	}
+	else
+		pthread_cond_wait(&f->cond, &f->lock);
 }
 
 void	push_waiter(t_dongle *d, t_coder *c, t_time now)

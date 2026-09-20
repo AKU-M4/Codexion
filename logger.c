@@ -30,7 +30,7 @@ void	log_state(t_sim *sim, int coder_id, t_state state)
 	t_time	elapsed;
 
 	pthread_mutex_lock(&sim->log_lock);
-	if (sim_should_stop(sim))
+	if (sim_should_stop(sim) && state != S_BURNED_OUT)
 	{
 		pthread_mutex_unlock(&sim->log_lock);
 		return ;

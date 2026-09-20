@@ -45,7 +45,6 @@ int	acquire_both(t_coder *c)
 		pthread_mutex_lock(&s->lock);
 		if (try_claim_both(f, s, c, get_abs_ms()))
 			return (1);
-		pthread_mutex_unlock(&s->lock);
 		wait_both(f, s);
 		pthread_mutex_unlock(&f->lock);
 	}

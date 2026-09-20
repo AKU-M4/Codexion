@@ -34,29 +34,43 @@ int	can_take(t_dongle *d, t_coder *c, t_time now)
 	return (1);
 }
 
-void	wait_both(t_dongle *f, t_dongle *s)
+static void	do_wait(t_dongle *target, t_time wake)
 {
 	struct timespec	ts;
+
+	if (wake > 0)
+	{
+		ms_to_timespec(wake, &ts);
+		pthread_cond_timedwait(&target->cond, &target->lock, &ts);
+	}
+	else
+		pthread_cond_wait(&target->cond, &target->lock);
+	pthread_mutex_unlock(&target->lock);
+}
+
+void	wait_both(t_dongle *f, t_dongle *s)
+{
+	t_dongle		*target;
+	t_dongle		*other;
 	t_time			now;
 	t_time			wake;
 
 	now = get_abs_ms();
+	target = f;
+	other = s;
+	if (!f->in_use && now >= f->available_at
+		&& (s->in_use || now < s->available_at))
+	{
+		target = s;
+		other = f;
+	}
 	wake = 0;
-	if (!f->in_use && f->available_at > now)
-		wake = f->available_at;
-	if (!s->in_use && s->available_at > now)
-	{
-		if (wake == 0 || s->available_at < wake)
-			wake = s->available_at;
-	}
-	pthread_mutex_unlock(&s->lock);
-	if (wake > 0)
-	{
-		ms_to_timespec(wake, &ts);
-		pthread_cond_timedwait(&f->cond, &f->lock, &ts);
-	}
-	else
-		pthread_cond_wait(&f->cond, &f->lock);
+	if (!target->in_use && target->available_at > now)
+		wake = target->available_at;
+	else if (!target->in_use)
+		wake = now + 5;
+	pthread_mutex_unlock(&other->lock);
+	do_wait(target, wake);
 }
 
 void	push_waiter(t_dongle *d, t_coder *c, t_time now)

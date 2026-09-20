@@ -1,50 +1,38 @@
-NAME		= codexion
-LIB			= libcodexion.a
+NAME	= codexion
 
-CC			= cc
-CFLAGS		= -Wall -Wextra -Werror -pthread
-AR			= ar
-ARFLAGS		= rcs
+CC		= cc
+CFLAGS	= -Wall -Wextra -Werror -pthread
 
-SRC_DIR		= .
-OBJ_DIR		= obj
+SRCS	= codexion.c \
+		  arg_errors.c \
+		  parsing.c \
+		  builder.c \
+		  heap.c \
+		  heap_utils.c \
+		  time_utils.c \
+		  sim_state.c \
+		  logger.c \
+		  dongle.c \
+		  dongle_utils.c \
+		  coder.c \
+		  monitor.c \
+		  cleanup.c
 
-SRCS		= codexion.c \
-			  arg_errors.c \
-			  parsing.c \
-			  builder.c \
-			  heap.c \
-			  heap_utils.c \
-			  time_utils.c \
-			  sim_state.c \
-			  logger.c \
-			  dongle.c \
-			  dongle_utils.c \
-			  coder.c \
-			  monitor.c \
-			  cleanup.c
-
-OBJS		= $(SRCS:%.c=$(OBJ_DIR)/%.o)
+OBJS	= $(SRCS:.c=.o)
 
 all: $(NAME)
 
-$(NAME): $(LIB)
-	$(CC) $(CFLAGS) $(LIB) -o $(NAME)
+$(NAME): $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 
-$(LIB): $(OBJS)
-	$(AR) $(ARFLAGS) $(LIB) $(OBJS)
-
-$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c codexion.h | $(OBJ_DIR)
+%.o: %.c codexion.h
 	$(CC) $(CFLAGS) -c $< -o $@
 
-$(OBJ_DIR):
-	mkdir -p $(OBJ_DIR)
-
 clean:
-	rm -rf $(OBJ_DIR)
+	rm -f $(OBJS)
 
 fclean: clean
-	rm -f $(NAME) $(LIB)
+	rm -f $(NAME)
 
 re: fclean all
 
